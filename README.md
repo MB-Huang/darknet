@@ -17,21 +17,31 @@ More details: http://pjreddie.com/darknet/yolo/
 * [Yolo v3 in other frameworks (TensorRT, TensorFlow, PyTorch, OpenVINO, OpenCV-dnn,...)](#yolo-v3-in-other-frameworks)
 * [Datasets](#datasets)
 
-0.  [Improvements in this repository](#improvements-in-this-repository)
-1.  [How to use](#how-to-use-on-the-command-line)
-2.  [How to compile on Linux](#how-to-compile-on-linux)
-3.  How to compile on Windows
-    * [Using vcpkg](#how-to-compile-on-windows-using-vcpkg)
-    * [Legacy way](#how-to-compile-on-windows-legacy-way)
-4.  [How to train (Pascal VOC Data)](#how-to-train-pascal-voc-data)
-5.  [How to train with multi-GPU:](#how-to-train-with-multi-gpu)
-6.  [How to train (to detect your custom objects)](#how-to-train-to-detect-your-custom-objects)
-7.  [How to train tiny-yolo (to detect your custom objects)](#how-to-train-tiny-yolo-to-detect-your-custom-objects)
-8.  [When should I stop training](#when-should-i-stop-training)
-9.  [How to calculate mAP on PascalVOC 2007](#how-to-calculate-map-on-pascalvoc-2007)
-10.  [How to improve object detection](#how-to-improve-object-detection)
-11.  [How to mark bounded boxes of objects and create annotation files](#how-to-mark-bounded-boxes-of-objects-and-create-annotation-files)
-12. [How to use Yolo as DLL and SO libraries](#how-to-use-yolo-as-dll-and-so-libraries)
+- [Yolo-v3 and Yolo-v2 for Windows and Linux](#yolo-v3-and-yolo-v2-for-windows-and-linux)
+    - [(neural network for object detection) - Tensor Cores can be used on Linux and Windows](#neural-network-for-object-detection---tensor-cores-can-be-used-on-linux-and-windows)
+    - [Requirements](#requirements)
+      - [Pre-trained models](#pre-trained-models)
+      - [Yolo v3 in other frameworks](#yolo-v3-in-other-frameworks)
+      - [Datasets](#datasets)
+        - [Examples of results](#examples-of-results)
+    - [Improvements in this repository](#improvements-in-this-repository)
+      - [How to use on the command line](#how-to-use-on-the-command-line)
+        - [For using network video-camera mjpeg-stream with any Android smartphone](#for-using-network-video-camera-mjpeg-stream-with-any-android-smartphone)
+    - [How to compile on Linux](#how-to-compile-on-linux)
+    - [How to compile on Windows (using `vcpkg`)](#how-to-compile-on-windows-using-vcpkg)
+    - [How to compile on Windows (legacy way)](#how-to-compile-on-windows-legacy-way)
+    - [How to compile (custom):](#how-to-compile-custom)
+  - [How to train (Pascal VOC Data):](#how-to-train-pascal-voc-data)
+  - [How to train with multi-GPU:](#how-to-train-with-multi-gpu)
+  - [How to train (to detect your custom objects):](#how-to-train-to-detect-your-custom-objects)
+    - [How to train tiny-yolo (to detect your custom objects):](#how-to-train-tiny-yolo-to-detect-your-custom-objects)
+  - [When should I stop training:](#when-should-i-stop-training)
+    - [How to calculate mAP on PascalVOC 2007:](#how-to-calculate-map-on-pascalvoc-2007)
+    - [Custom object detection:](#custom-object-detection)
+  - [How to improve object detection:](#how-to-improve-object-detection)
+  - [How to mark bounded boxes of objects and create annotation files:](#how-to-mark-bounded-boxes-of-objects-and-create-annotation-files)
+  - [Using Yolo9000](#using-yolo9000)
+  - [How to use Yolo as DLL and SO libraries](#how-to-use-yolo-as-dll-and-so-libraries)
 
 |  ![Darknet Logo](http://pjreddie.com/media/files/darknet-black-small.png) | &nbsp; ![map_time](https://user-images.githubusercontent.com/4096485/52151356-e5d4a380-2683-11e9-9d7d-ac7bc192c477.jpg) mAP@0.5 (AP50) https://pjreddie.com/media/files/papers/YOLOv3.pdf |
 |---|---|
@@ -45,7 +55,7 @@ More details: http://pjreddie.com/darknet/yolo/
 
 * Windows or Linux
 * **CMake >= 3.8** for modern CUDA support: https://cmake.org/download/
-* **CUDA 10.0**: https://developer.nvidia.com/cuda-toolkit-archive (on Linux do [Post-installation Actions](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html#post-installation-actions))
+* **CUDA 9.0** or **CUDA 10.0**: https://developer.nvidia.com/cuda-toolkit-archive (on Linux do [Post-installation Actions](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html#post-installation-actions))
 * **OpenCV >= 2.4**: use your preferred package manager (brew, apt), build from source using [vcpkg](https://github.com/Microsoft/vcpkg) or download from [OpenCV official site](https://opencv.org/releases.html) (on Windows set system variable `OpenCV_DIR` = `C:\opencv\build` - where are the `include` and `x64` folders [image](https://user-images.githubusercontent.com/4096485/53249516-5130f480-36c9-11e9-8238-a6e82e48c6f2.png))
 * **cuDNN >= 7.0 for CUDA 10.0** https://developer.nvidia.com/rdp/cudnn-archive (on **Linux** copy `cudnn.h`,`libcudnn.so`... as desribed here https://docs.nvidia.com/deeplearning/sdk/cudnn-install/index.html#installlinux-tar , on **Windows** copy `cudnn.h`,`cudnn64_7.dll`, `cudnn64_7.lib` as desribed here https://docs.nvidia.com/deeplearning/sdk/cudnn-install/index.html#installwindows )
 * **GPU with CC >= 3.0**: https://en.wikipedia.org/wiki/CUDA#GPUs_supported

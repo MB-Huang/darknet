@@ -1,10 +1,10 @@
-GPU=0
+GPU=1
 CUDNN=0
 CUDNN_HALF=0
-OPENCV=0
+OPENCV=1
 AVX=0
 OPENMP=0
-LIBSO=0
+LIBSO=1
 ZED_CAMERA=0
 
 # set GPU=1 and CUDNN=1 to speedup on GPU
@@ -46,6 +46,8 @@ OS := $(shell uname)
 VPATH=./src/
 EXEC=darknet
 OBJDIR=./obj/
+CUDADIR=/usr/local/cuda
+CUDNNDIR=/usr/local/cudnn
 
 ifeq ($(LIBSO), 1)
 LIBNAMESO=libdarknet.so
@@ -86,23 +88,23 @@ LDFLAGS+= -lgomp
 endif
 
 ifeq ($(GPU), 1)
-COMMON+= -DGPU -I/usr/local/cuda/include/
+COMMON+= -DGPU -I$(CUDADIR)/include/
 CFLAGS+= -DGPU
 ifeq ($(OS),Darwin) #MAC
-LDFLAGS+= -L/usr/local/cuda/lib -lcuda -lcudart -lcublas -lcurand
+LDFLAGS+= -L$(CUDADIR)/lib -lcuda -lcudart -lcublas -lcurand
 else
-LDFLAGS+= -L/usr/local/cuda/lib64 -lcuda -lcudart -lcublas -lcurand
+LDFLAGS+= -L$(CUDADIR)/lib64 -lcuda -lcudart -lcublas -lcurand
 endif
 endif
 
 ifeq ($(CUDNN), 1)
 COMMON+= -DCUDNN
 ifeq ($(OS),Darwin) #MAC
-CFLAGS+= -DCUDNN -I/usr/local/cuda/include
-LDFLAGS+= -L/usr/local/cuda/lib -lcudnn
+CFLAGS+= -DCUDNN -I$(CUDADIR)/include
+LDFLAGS+= -L$(CUDADIR)/lib -lcudnn
 else
-CFLAGS+= -DCUDNN -I/usr/local/cudnn/include
-LDFLAGS+= -L/usr/local/cudnn/lib64 -lcudnn
+CFLAGS+= -DCUDNN -I$(CUDNNDIR)/include
+LDFLAGS+= -L$(CUDNNDIR)/lib64 -lcudnn
 endif
 endif
 
